@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  backend-service:
+    build: packages/bw-server
+    restart: always
+    depends_on:
+      - database
+    env_file: .env
+    environment:
+      - PORT=$BE_SERVICE_PORT
+      - PG_HOST=database
+      - PG_PORT=5432
+      - PG_USER=$PG_USER
+      - PG_PASSWORD=$PG_PASSWORD
+      - PG_DATABASE=$PG_DATABASE
+      - JWT_SECRET=$JWT_SECRET
+    ports:
+      - ${BE_SERVICE_PORT}:${BE_SERVICE_PORT}
+    volumes:
+      - ./packages/bw-server:/usr/app/
+      - /usr/app/node_modules
+    networks:
+      - shared-network
+    command: /usr/app/node_modules/.bin/nodemon -L --exec ts-node ./src/index.ts
+
+  web-client:
+    build: packages/bw-client
+    restart: always
+    depends_on:
+      - backend-service
+    env_file: .env
+    environment:
+      - PORT=$WEB_CLIENT_PORT
+    ports:
+      - ${WEB_CLIENT_PORT}:${WEB_CLIENT_PORT}
+    volumes:
+      - ./packages/bw-client:/usr/app/
+      - /usr/app/node_modules
+    networks:
+      - shared-network
+    command: npm run dev
+
+  database:
+    image: postgres
+    restart: always
+    env_file: .env
+    environment:
+      - POSTGRES_USERNAME=$PG_USERNAME
+      - POSTGRES_PASSWORD=$PG_PASSWORD
+      - POSTGRES_DB=$PG_DATABASE
+    volumes:
+      - dbdata:/var/lib/postgresql/database
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    driver: bridge
+
+volumes:
+  dbdata:

@@ -1,0 +1,9 @@
+{
+  "name": "budget-monorepo",
+  "version": "1.0.0",
+  "scripts": {
+    "preinstall": "cd ./packages/bw-server && npm install && cd ../bw-client && npm install && cd ../../"
+  },
+  "author": "",
+  "license": "ISC"
+}
