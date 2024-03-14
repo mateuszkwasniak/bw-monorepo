@@ -1,0 +1,6 @@
+[submodule "packages/bw-client"]
+	path = packages/bw-client
+	url = git@github.com:mateuszkwasniak/bw-client.git
+[submodule "packages/bw-server"]
+	path = packages/bw-server
+	url = git@github.com:mateuszkwasniak/bw-server.git
